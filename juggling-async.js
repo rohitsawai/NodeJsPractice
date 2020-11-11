@@ -1,17 +1,25 @@
-const jugAsync = require("./juggling-async-main");
+const http = require("http");
+const bl = require("bl");
 
 const url_1 = process.argv[2];
 const url_2 = process.argv[3];
 const url_3 = process.argv[4];
 
-function jugAsyncRes(url) {
-  return jugAsync(url, callback);
+async function jugglingFunction(url) {
+  let result = "";
+  await http.get(url, (res) => {
+    res.setEncoding("utf-8");
+
+    res.on("data", (data) => {
+      result += data;
+    });
+
+    res.on("end", () => {
+      console.log(result);
+    });
+  });
 }
 
-function callback(data) {
-  console.log(data);
-}
-
-console.log(jugAsyncRes(url_1));
-console.log(jugAsyncRes(url_2));
-console.log(jugAsyncRes(url_3));
+jugglingFunction(url_1);
+jugglingFunction(url_2);
+jugglingFunction(url_3);
